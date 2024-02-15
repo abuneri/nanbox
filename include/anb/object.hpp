@@ -60,7 +60,7 @@ class object {
   explicit object(const double fp64_val) { value_ = fp64_val; }
 
   explicit object(const std::string_view str_val) {
-    AVM_ASSERT(str_val.size() <= max_sso_len,
+    ANB_ASSERT(str_val.size() <= max_sso_len,
                "String size too large for non-heap allocated nanbox");
     value_ = make_string_sso(str_val);
   }
@@ -136,7 +136,7 @@ class object {
   }
 
   double as_qnan() const {
-    AVM_ASSERT(is_qnan(), "Underlying object is not a qnan");
+    ANB_ASSERT(is_qnan(), "Underlying object is not a qnan");
     return value_;
   }
 
@@ -148,7 +148,7 @@ class object {
   }
 
   bool as_boolean() const {
-    AVM_ASSERT(is_boolean(), "Underlying object is not a boolean");
+    ANB_ASSERT(is_boolean(), "Underlying object is not a boolean");
     return !(as_nb() & detail::nanbox::fixed_type_false_mask);
   }
 
@@ -163,7 +163,7 @@ class object {
   }
 
   std::int32_t as_int32() const {
-    AVM_ASSERT(is_int32(), "Underlying object is not an int32");
+    ANB_ASSERT(is_int32(), "Underlying object is not an int32");
 
     return *reinterpret_cast<const std::uint64_t*>(&value_) &
            detail::nanbox::fixed_type_int32_data_mask;
@@ -177,7 +177,7 @@ class object {
   }
 
   double as_float64() const {
-    AVM_ASSERT(is_float64(), "Underlying object is not a float64");
+    ANB_ASSERT(is_float64(), "Underlying object is not a float64");
     return value_;
   }
 
@@ -189,7 +189,7 @@ class object {
   }
 
   std::string as_string_sso() const {
-    AVM_ASSERT(is_sso_string(), "Underlying object is not fixed size string");
+    ANB_ASSERT(is_sso_string(), "Underlying object is not fixed size string");
 
     const std::uint64_t nb_val = as_nb();
 
@@ -221,7 +221,7 @@ class object {
   }
 
   string<AllocatorT>& as_string_heap(const AllocatorT& allocator) const {
-    AVM_ASSERT(is_heap_string(allocator),
+    ANB_ASSERT(is_heap_string(allocator),
                "Underlying object is not a heap allocated string");
 
     return deref_heap_obj<string<AllocatorT>>();
@@ -238,7 +238,7 @@ class object {
   }
 
   list<AllocatorT>& as_list(const AllocatorT& allocator) const {
-    AVM_ASSERT(is_list(allocator),
+    ANB_ASSERT(is_list(allocator),
                "Underlying object is not a heap allocated list");
     return deref_heap_obj<list<AllocatorT>>();
   }
@@ -254,7 +254,7 @@ class object {
   }
 
   dictionary<AllocatorT>& as_dictionary(const AllocatorT& allocator) const {
-    AVM_ASSERT(is_dictionary(allocator),
+    ANB_ASSERT(is_dictionary(allocator),
                "Underlying object is not a heap allocated dictionary");
     return deref_heap_obj<dictionary<AllocatorT>>();
   }
