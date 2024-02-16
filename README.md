@@ -38,7 +38,7 @@ find_package(anb REQUIRED)
 # ... configure <your_target> ...
 
 target_link_libraries(<your_target>
-    anb::anb
+    anb
 )
 ```
 

@@ -1,9 +1,6 @@
 add_library(anb
     object.cpp
 )
-add_library(anb::anb
-    ALIAS anb
-)
 
 set(ANB_INCLUDE_ROOT_DIR ${PROJECT_SOURCE_DIR}/include)
 set(ANB_INCLUDE_PROJ_DIR ${ANB_INCLUDE_ROOT_DIR}/anb)
