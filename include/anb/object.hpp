@@ -12,7 +12,6 @@
 
 #include "detail/nanbox.hpp"
 #include "detail/polyfill.hpp"
-#include "detail/util.hpp"
 #include "dictionary.hpp"
 #include "list.hpp"
 #include "string.hpp"
@@ -129,6 +128,8 @@ class object {
 
   // TODO: make_tree()
   // TODO: make_graph()
+
+  // TODO: impl to_<type> conversions
 
   bool is_qnan() const {
     return ((as_nb() & detail::nanbox::signature_mask) ==
@@ -474,53 +475,5 @@ template <typename AllocatorT>
 struct std::hash<anb::object<AllocatorT>> {
   std::size_t operator()(const anb::object<AllocatorT>& obj) const {
     return obj.hash();
-  }
-};
-
-template <typename AllocatorT>
-struct std::hash<std::vector<anb::object<AllocatorT>>> {
-  std::size_t operator()(
-      const AllocatorT& allocator,
-      const std::vector<anb::object<AllocatorT>>& objects) const {
-    std::size_t seed = objects.size();
-    for (const auto& obj : objects) {
-      seed ^= anb::detail::magic_hash(obj.hash());
-    }
-    return seed;
-  }
-};
-
-template <typename AllocatorT>
-struct std::hash<anb::list<AllocatorT>> {
-  std::size_t operator()(const AllocatorT& allocator,
-                         const anb::list<AllocatorT>& list) const {
-    return std::hash<std::vector<anb::object<AllocatorT>>>{}(allocator,
-                                                             list.objects_);
-  }
-};
-
-template <typename AllocatorT>
-struct std::hash<
-    std::unordered_map<anb::object<AllocatorT>, anb::object<AllocatorT>>> {
-  std::size_t operator()(
-      const AllocatorT& allocator,
-      const std::unordered_map<anb::object<AllocatorT>,
-                               anb::object<AllocatorT>>& objects) const {
-    std::size_t seed = objects.size();
-    for (const auto& [key_obj, val_obj] : objects) {
-      seed ^= anb::detail::magic_hash(key_obj.hash());
-      seed ^= anb::detail::magic_hash(val_obj.hash());
-    }
-    return seed;
-  }
-};
-
-template <typename AllocatorT>
-struct std::hash<anb::dictionary<AllocatorT>> {
-  std::size_t operator()(const AllocatorT& allocator,
-                         const anb::dictionary<AllocatorT>& dict) const {
-    return std::hash<
-        std::unordered_map<anb::object<AllocatorT>, anb::object<AllocatorT>>>{}(
-        allocator, dict.object_dict_);
   }
 };

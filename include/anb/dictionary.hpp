@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "heap_object.hpp"
+#include "detail/util.hpp"
 
 namespace anb {
 
@@ -44,3 +45,29 @@ struct dictionary : public heap_object<AllocatorT> {
 };
 
 }  // namespace anb
+
+template <typename AllocatorT>
+struct std::hash<
+    std::unordered_map<anb::object<AllocatorT>, anb::object<AllocatorT>>> {
+  std::size_t operator()(
+      const AllocatorT& allocator,
+      const std::unordered_map<anb::object<AllocatorT>,
+                               anb::object<AllocatorT>>& objects) const {
+    std::size_t seed = objects.size();
+    for (const auto& [key_obj, val_obj] : objects) {
+      seed ^= anb::detail::magic_hash(key_obj.hash());
+      seed ^= anb::detail::magic_hash(val_obj.hash());
+    }
+    return seed;
+  }
+};
+
+template <typename AllocatorT>
+struct std::hash<anb::dictionary<AllocatorT>> {
+  std::size_t operator()(const AllocatorT& allocator,
+                         const anb::dictionary<AllocatorT>& dict) const {
+    return std::hash<
+        std::unordered_map<anb::object<AllocatorT>, anb::object<AllocatorT>>>{}(
+        allocator, dict.object_dict_);
+  }
+};
