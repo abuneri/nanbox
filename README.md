@@ -1,4 +1,4 @@
-# (A)buneris (N)an(b)ox: Dyanmic Typing
+# (A)buneris (N)an(b)ox: Dynamic Typing
 A dynamically typed and space efficient object implementation
 
 ## Supported Fixed Types
