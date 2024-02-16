@@ -63,15 +63,12 @@ class my_allocator {
  public:
   template <template <class> typename HeapObjT>
   HeapObjT<my_allocator>* alloc() {
-    void* heap_ptr = std::malloc(sizeof(HeapObjT<my_allocator>));
-    HeapObjT<my_allocator>* obj_ptr = std::construct_at(
-        reinterpret_cast<HeapObjT<my_allocator>*>(heap_ptr), *this);
-    return obj_ptr;
+    return new HeapObjT<mock_allocator>(*this);
   }
 
   template <template <class> typename HeapObjT>
   void dealloc(HeapObjT<my_allocator>* obj_ptr) {
-    std::free(obj_ptr);
+    delete obj_ptr;
   }
 
   std::unordered_map<void*, anb::heap_object_type> type_lookup;
