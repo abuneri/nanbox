@@ -22,7 +22,7 @@ constexpr std::uint64_t lshift(std::uint64_t val, int amount) {
     }                                                                    \
   } while (false)
 #else
-#define AVM_ASSERT(condition, message) \
+#define ANB_ASSERT(condition, message) \
   do {                                 \
   } while (false)
 #endif
