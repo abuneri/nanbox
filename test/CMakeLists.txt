@@ -26,7 +26,7 @@ add_executable(anb_test
     test_string_sso.cpp
 )
 target_link_libraries(anb_test
-    anb::anb
+    anb
     GTest::GTest
 )
 add_test(anb_tests
