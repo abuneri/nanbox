@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-#include "detail/heap_object.hpp"
+#include "heap_object.hpp"
 
 namespace anb {
 

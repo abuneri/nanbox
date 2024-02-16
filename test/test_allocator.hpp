@@ -14,7 +14,7 @@ class mock_allocator {
 
   template <template <class> typename HeapObjT>
   void dealloc(HeapObjT<mock_allocator>* obj_ptr) {
-    obj_ptr->~HeapObjT<mock_allocator>();
+    std::free(obj_ptr);
   }
 
   std::unordered_map<void*, anb::heap_object_type> type_lookup;

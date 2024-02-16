@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "detail/heap_object.hpp"
+#include "heap_object.hpp"
 
 namespace anb {
 
