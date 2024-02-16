@@ -23,8 +23,16 @@ The allocator is fully customizable as long as it meets the general API requirem
 ```
 mkdir build
 cd build
+
+# Without tests
 cmake .. -DBUILD_TESTING=OFF
 cmake --build . --config Release
+
+# With tests
+cmake ..
+cmake --build . --config Release
+ctest
+
 cmake --install . --config Release
 ```
 
