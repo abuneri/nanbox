@@ -70,8 +70,6 @@ class my_allocator {
   void dealloc(HeapObjT<my_allocator>* obj_ptr) {
     delete obj_ptr;
   }
-
-  std::unordered_map<void*, anb::heap_object_type> type_lookup;
 };
 using ma = my_allocator;
 ma g_allocator;

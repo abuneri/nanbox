@@ -69,7 +69,6 @@ class object {
     object o;
 
     HeapObjT<AllocatorT>* heap_ptr = allocator.template alloc<HeapObjT>();
-    allocator.type_lookup[heap_ptr] = heap_ptr->type();
 
     const std::uint64_t nb_heap_ptr = detail::nanbox::heap_type_value |
                                       reinterpret_cast<std::uint64_t>(heap_ptr);
@@ -83,7 +82,6 @@ class object {
     const std::uint64_t nb_data_pointer =
         nb_heap & detail::nanbox::heap_type_data_mask;
     if (auto heap_ptr = obj.get_heap_ptr<HeapObjT>()) {
-      allocator.type_lookup.erase(heap_ptr);
       allocator.template dealloc<HeapObjT>(heap_ptr);
 
       // TODO: add proper handling for nullptr heap objects
@@ -213,10 +211,7 @@ class object {
 
   bool is_heap_string(const AllocatorT& allocator) const {
     if (const auto heap_ptr = get_heap_ptr<string>()) {
-      auto type_lookup_itr = allocator.type_lookup.find(heap_ptr);
-      if (type_lookup_itr != allocator.type_lookup.end()) {
-        return (type_lookup_itr->second == heap_object_type::string);
-      }
+      return (heap_ptr->type() == heap_object_type::string);
     }
     return false;
   }
@@ -230,10 +225,7 @@ class object {
 
   bool is_list(const AllocatorT& allocator) const {
     if (const auto heap_ptr = get_heap_ptr<list>()) {
-      auto type_lookup_itr = allocator.type_lookup.find(heap_ptr);
-      if (type_lookup_itr != allocator.type_lookup.end()) {
-        return (type_lookup_itr->second == heap_object_type::list);
-      }
+      return (heap_ptr->type() == heap_object_type::list);
     }
     return false;
   }
@@ -246,10 +238,7 @@ class object {
 
   bool is_dictionary(const AllocatorT& allocator) const {
     if (const auto heap_ptr = get_heap_ptr<dictionary>()) {
-      auto type_lookup_itr = allocator.type_lookup.find(heap_ptr);
-      if (type_lookup_itr != allocator.type_lookup.end()) {
-        return (type_lookup_itr->second == heap_object_type::dictionary);
-      }
+      return (heap_ptr->type() == heap_object_type::dictionary);
     }
     return false;
   }

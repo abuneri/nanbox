@@ -18,7 +18,7 @@ struct string : public heap_object<AllocatorT> {
 
   void reset(std::string_view str) { set(str); }
 
-  heap_object_type type() const { return heap_object_type::string; }
+  heap_object_type type() const override { return heap_object_type::string; }
 
  private:
   std::string d_;

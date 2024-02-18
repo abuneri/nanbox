@@ -3,13 +3,14 @@
 namespace anb {
 
 enum class heap_object_type { string, list, dictionary };
+template <typename AllocatorT> struct heap_object {
 
-template <typename AllocatorT>
-struct heap_object {
-  heap_object(const AllocatorT& handle) : allocator_handle(handle) {}
+  heap_object(const AllocatorT &handle) : allocator_handle(handle) {}
   virtual ~heap_object() = default;
 
-  const AllocatorT& allocator_handle;
+  virtual heap_object_type type() const = 0;
+
+  const AllocatorT &allocator_handle;
 };
 
-}  // namespace anb
+} // namespace anb

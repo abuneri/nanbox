@@ -29,7 +29,7 @@ struct list : public heap_object<AllocatorT> {
     set(std::forward<Args>(args)...);
   }
 
-  heap_object_type type() const { return heap_object_type::list; }
+  heap_object_type type() const override { return heap_object_type::list; }
 
   std::vector<anb::object<AllocatorT>> objects_;
 };

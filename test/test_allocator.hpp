@@ -1,5 +1,4 @@
 #pragma once
-#include <anb/object.hpp>
 
 #include <unordered_map>
 
@@ -14,8 +13,6 @@ class mock_allocator {
   void dealloc(HeapObjT<mock_allocator>* obj_ptr) {
     delete obj_ptr;
   }
-
-  std::unordered_map<void*, anb::heap_object_type> type_lookup;
 };
 using ma = mock_allocator;
 

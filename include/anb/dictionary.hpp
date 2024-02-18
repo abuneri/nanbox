@@ -38,7 +38,7 @@ struct dictionary : public heap_object<AllocatorT> {
         ArgPairs<anb::object<AllocatorT>, anb::object<AllocatorT>>>(args)...);
   }
 
-  heap_object_type type() const { return heap_object_type::dictionary; }
+  heap_object_type type() const override { return heap_object_type::dictionary; }
 
   std::unordered_map<anb::object<AllocatorT>, anb::object<AllocatorT>>
       object_dict_;
