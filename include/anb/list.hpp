@@ -12,7 +12,7 @@ class object;
 
 template <typename AllocatorT>
 struct list : public heap_object<AllocatorT> {
-  list(const AllocatorT& handle) : heap_object<AllocatorT>(handle) {}
+  list(AllocatorT& handle) : heap_object<AllocatorT>(handle) {}
 
   template <typename... Args>
   void set(Args&&... args) {

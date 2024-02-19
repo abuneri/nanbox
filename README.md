@@ -98,4 +98,10 @@ str_data.set(lorem);
 if (heap_str.is_heap_string(g_allocator)) {
     // ...
 }
+
+// Assignment
+i32.assign(g_allocator, "some awesome text!");
+if (i32.is_heap_string(g_allocator)) {
+    // ...
+}
 ```

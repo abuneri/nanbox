@@ -8,7 +8,7 @@ namespace anb {
 
 template <typename AllocatorT>
 struct string : public heap_object<AllocatorT> {
-  string(const AllocatorT& handle) : heap_object<AllocatorT>(handle) {}
+  string(AllocatorT& handle) : heap_object<AllocatorT>(handle) {}
 
   std::string_view view() const { return d_; }
 

@@ -75,40 +75,17 @@ class object {
     return object{*reinterpret_cast<const double*>(&nb_heap_ptr)};
   }
 
-  template <template <class> typename HeapObjT>
-  static void dealloc_heap(object& obj, AllocatorT& allocator) {
+  void dealloc_heap(AllocatorT& allocator) {
     const std::uint64_t nb_heap =
-        *reinterpret_cast<const std::uint64_t*>(&obj.value_);
+        *reinterpret_cast<const std::uint64_t*>(&value_);
     const std::uint64_t nb_data_pointer =
         nb_heap & detail::nanbox::heap_type_data_mask;
-    if (auto heap_ptr = obj.get_heap_ptr<HeapObjT>()) {
-      allocator.template dealloc<HeapObjT>(heap_ptr);
+    if (auto heap_ptr = get_heap_ptr<heap_object>()) {
+      allocator.template dealloc<heap_object>(heap_ptr);
 
       // TODO: add proper handling for nullptr heap objects
-      obj.value_ =
+      value_ =
           *reinterpret_cast<const double*>(&detail::nanbox::heap_type_value);
-    }
-  }
-
-  template <template <class> typename HeapObjT>
-  HeapObjT<AllocatorT>* get_heap_ptr() const {
-    const std::uint64_t nb_val = as_nb();
-    if ((nb_val & detail::nanbox::heap_type_value) ==
-        detail::nanbox::heap_type_value) {
-      const std::uint64_t nb_data_pointer =
-          nb_val & detail::nanbox::heap_type_data_mask;
-      return reinterpret_cast<HeapObjT<AllocatorT>*>(nb_data_pointer);
-    }
-    return nullptr;
-  }
-
-  void dealloc_heap(AllocatorT& allocator) {
-    if (is_heap_string(allocator)) {
-      object::dealloc_heap<string>(*this, allocator);
-    } else if (is_list(allocator)) {
-      object::dealloc_heap<list>(*this, allocator);
-    } else if (is_dictionary(allocator)) {
-      object::dealloc_heap<dictionary>(*this, allocator);
     }
   }
 
@@ -209,6 +186,10 @@ class object {
     detail::unreachable();
   }
 
+  bool is_heap_nullptr() const {
+    return (is_heap() && get_heap_ptr<heap_object>() == nullptr);
+  }
+
   bool is_heap_string(const AllocatorT& allocator) const {
     if (const auto heap_ptr = get_heap_ptr<string>()) {
       return (heap_ptr->type() == heap_object_type::string);
@@ -255,7 +236,25 @@ class object {
   // TODO: is_graph()
   // TODO: as_graph()
 
-  // TODO: implement assignment operators
+  // TODO: implement all types assignments
+
+  object& assign(AllocatorT& allocator, const std::string_view str) {
+    if (is_heap_string(allocator) && str.size() > max_sso_len) {
+      as_string_heap(allocator).set(str);
+    } else {
+      if (is_heap()) {
+        dealloc_heap(allocator);
+      }
+      if (str.size() <= max_sso_len) {
+        value_ = object(str).value_;
+      } else {
+        object heap_str = make_string_heap(allocator);
+        heap_str.as_string_heap(allocator).set(str);
+        value_ = heap_str.value_;
+      }
+    }
+    return *this;
+  }
 
   std::size_t hash() const {
     if (is_heap()) {
@@ -268,6 +267,18 @@ class object {
   std::uint64_t nanbox_value() const { return as_nb(); }
 
  private:
+  template <template <class> typename HeapObjT>
+  HeapObjT<AllocatorT>* get_heap_ptr() const {
+    const std::uint64_t nb_val = as_nb();
+    if ((nb_val & detail::nanbox::heap_type_value) ==
+        detail::nanbox::heap_type_value) {
+      const std::uint64_t nb_data_pointer =
+          nb_val & detail::nanbox::heap_type_data_mask;
+      return reinterpret_cast<HeapObjT<AllocatorT>*>(nb_data_pointer);
+    }
+    return nullptr;
+  }
+
   std::uint64_t as_nb() const {
     return *reinterpret_cast<const std::uint64_t*>(&value_);
   }
@@ -291,7 +302,6 @@ class object {
 
     const std::size_t str_len = str_val.size();
     if (str_len == max_sso_len) {
-      const auto t = str_val[0];
       const std::uint64_t nb_p_str =
           detail::nanbox::fixed_type_packed_string_value |
           to_sso_nb_val(str_val, 5, 40) | to_sso_nb_val(str_val, 4, 32) |

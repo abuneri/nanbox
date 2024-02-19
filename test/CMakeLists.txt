@@ -15,6 +15,7 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_executable(anb_test
     test_allocator.hpp
 
+    test_assignment.cpp
     test_boolean.cpp
     test_dictionary.cpp
     test_float64.cpp

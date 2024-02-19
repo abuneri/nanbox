@@ -41,6 +41,6 @@ TEST(anb, object_list) {
 
   EXPECT_NE(list.hash(), smaller_list.hash());
 
-  anb::object<ma>::dealloc_heap<anb::list>(list, allocator);
-  anb::object<ma>::dealloc_heap<anb::list>(smaller_list, allocator);
+  list.dealloc_heap(allocator);
+  smaller_list.dealloc_heap(allocator);
 }

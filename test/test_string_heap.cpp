@@ -14,7 +14,7 @@ auto validate_string_roundtrip_heap = [](ma& allocator,
   t.set(s);
   EXPECT_EQ(s, t.view());
 
-  anb::object<ma>::dealloc_heap<anb::string>(heap_str, allocator);
+  heap_str.dealloc_heap(allocator);
 };
 
 TEST(anb, object_string_heap) {
@@ -50,4 +50,6 @@ TEST(anb, object_string_heap) {
   EXPECT_EQ(sizeof(double), sizeof(hw_str));
 
   EXPECT_NE(lorem_str.hash(), hw_str.hash());
+  lorem_str.dealloc_heap(allocator);
+  hw_str.dealloc_heap(allocator);
 }

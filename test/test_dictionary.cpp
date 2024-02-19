@@ -33,6 +33,6 @@ TEST(anb, object_dictionary) {
 
   EXPECT_NE(dict.hash(), large_dict.hash());
 
-  anb::object<ma>::dealloc_heap<anb::dictionary>(dict, allocator);
-  anb::object<ma>::dealloc_heap<anb::dictionary>(large_dict, allocator);
+  dict.dealloc_heap(allocator);
+  large_dict.dealloc_heap(allocator);
 }

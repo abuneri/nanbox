@@ -12,7 +12,7 @@ class object;
 
 template <typename AllocatorT>
 struct dictionary : public heap_object<AllocatorT> {
-  dictionary(const AllocatorT& handle) : heap_object<AllocatorT>(handle) {}
+  dictionary(AllocatorT& handle) : heap_object<AllocatorT>(handle) {}
 
   template <template <class, class> typename... ArgPairs>
   void set(
